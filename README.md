@@ -105,7 +105,7 @@ In-situ Chl-a was measured by the Junta de Extremadura between 2017 and 2022. A 
 
 ## Citation
 
-A Zenodo DOI will be added here upon release.
+This dataset is archived on Zenodo: https://doi.org/10.5281/zenodo.20813735
 
 ## Contact
 
