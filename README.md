@@ -6,7 +6,7 @@ This repository accompanies a data descriptor submitted to *Data in Brief*, asso
 
 ## Study area
 
-![Location of the 32 study reservoirs in Extremadura, Spain](figures/reservoirs.png)
+![Location of the 32 study reservoirs in Extremadura, Spain](reservoirs.png)
 
 ## Repository structure
 
@@ -15,8 +15,7 @@ C2NET-ExtremaduraData/
   README.md
   samples.csv      94 paired satellite–in-situ records (6 columns)
   metadata.csv     32 reservoirs, descriptors (15 columns)
-  figures/
-    reservoirs.pdf / reservoirs.png   study-area map
+  reservoirs.png   study-area map
 ```
 
 All files are UTF-8 encoded; dates use ISO 8601 (`YYYY-MM-DD`) and the decimal separator is a point.
