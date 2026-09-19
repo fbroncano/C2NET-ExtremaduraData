@@ -117,8 +117,11 @@ This is a starting point and a sanity check, not a recommended retrieval: it is 
 ## Related articles
 
 - A. Cuartero, J. Cáceres-Merino, J.A. Torrecilla-Pinero (2023). *An application of C2-Net atmospheric corrections for chlorophyll-a estimation in small reservoirs.* Remote Sensing Applications: Society and Environment 32, 101021. https://doi.org/10.1016/j.rsase.2023.101021
-- J. Cáceres-Merino, A. Cuartero, J.A. Torrecilla-Pinero (2024). *Finding the optimal window: the influence of size on remote-sensing-based Chl-a prediction in small reservoirs.* IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens. 17, 18769–18783. https://doi.org/10.1109/JSTARS.2024.3476970
-- J.A. Torrecilla-Pinero, V. Amores-Chaparro, J. Cáceres-Merino, F. Broncano, A. Cuartero (2026). *Satellite-derived chlorophyll-a in inland reservoirs: bias correction of C2RCC, C2X and C2XC processors with machine learning.* Int. J. Appl. Earth Obs. Geoinf. 152, 105415. https://doi.org/10.1016/j.jag.2026.105415
+- J. Cáceres-Merino, A. Cuartero, J.A. Torrecilla-Pinero (2024). *Finding Optimal Spatial Window: The Influence of Size on Remote-Sensing-Based Chl-a Prediction in Small Reservoirs.* IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens. 17, 18769–18783. https://doi.org/10.1109/JSTARS.2024.3476970
+- J.A. Torrecilla-Pinero, A. Cuartero, J. Cáceres-Merino, V. Amores-Chaparro, F. Broncano (2026). *Machine learning correction of C2-Net for chlorophyll-a retrieval in optically complex small reservoirs.* Int. J. Appl. Earth Obs. Geoinf. 152, 105415. https://doi.org/10.1016/j.jag.2026.105415
+- V. Amores-Chaparro, F. Broncano-Morgado, P. Fernández-González, A. Cuartero, J. Torrecilla-Pinero (2026). *Monitoring Water Quality in Small Reservoirs Using Sentinel-2 Imagery and Machine Learning.* Eng. Proc. 123(1), 7. https://doi.org/10.3390/engproc2026123007
+
+The last of these is related work rather than a study underlying this release: it covers five further Extremaduran reservoirs monitored by the continuous automatic probes of the Guadiana basin network, which are a different set of water bodies and a different in-situ source, and are not part of this dataset.
 
 ## License
 
