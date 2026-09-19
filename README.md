@@ -1,8 +1,8 @@
-# C2NET-ExtremaduraData
+# C2NET-ExtremaduraData (C2NEx-22)
 
 Paired satellite–in-situ chlorophyll-a (Chl-a) dataset for **32 small inland reservoirs** in Extremadura, southwestern Spain (2017–2022). For each in-situ measurement, Chl-a was retrieved from Sentinel-2 MSI Level-1C imagery atmospherically corrected with three processors of the C2-Net family (C2RCC, C2X, C2XC) in ESA SNAP, using a 7×7-pixel maximum-value estimator.
 
-This repository accompanies a data descriptor submitted to *Data in Brief*, associated with the related research article Torrecilla-Pinero et al. (2026), *Int. J. Appl. Earth Obs. Geoinf.* 152, 105415 (https://doi.org/10.1016/j.jag.2026.105415).
+This repository accompanies a data descriptor submitted to *IEEE Data Descriptions*, associated with the related research article Torrecilla-Pinero et al. (2026), *Int. J. Appl. Earth Obs. Geoinf.* 152, 105415 (https://doi.org/10.1016/j.jag.2026.105415).
 
 ## Study area
 
@@ -13,16 +13,20 @@ This repository accompanies a data descriptor submitted to *Data in Brief*, asso
 ```
 C2NET-ExtremaduraData/
   README.md
-  samples.csv      94 paired satellite–in-situ records (6 columns)
-  metadata.csv     32 reservoirs, descriptors (15 columns)
-  reservoirs.png   study-area map
+  samples.csv              94 paired satellite–in-situ records (6 columns)
+  metadata.csv             32 reservoirs, descriptors (17 columns)
+  baseline_correction.py   reference bias correction (see below)
+  reservoirs.png           study-area map
+  LICENSE                  CC BY-NC 4.0 licence text
 ```
 
-All files are UTF-8 encoded; dates use ISO 8601 (`YYYY-MM-DD`) and the decimal separator is a point.
+All files are UTF-8 encoded and the decimal separator is a point.
 
 ## Overview
 
-In-situ Chl-a was measured by the Junta de Extremadura between 2017 and 2022. A total of 138 in-situ measurements were collected; the 94 that coincide with a cloud-free Sentinel-2 acquisition form the complete satellite–in-situ pairs in `samples.csv`. The reservoirs span mesotrophic to hypertrophic states and include extreme bloom events (up to 332 µg/L).
+In-situ Chl-a was measured by the Junta de Extremadura between 2017 and 2022, in two campaigns per year (June and November). A total of 138 in-situ measurements were collected; the 94 for which a cloud-free Sentinel-2 acquisition was available within ±48 h of the sample form the complete satellite–in-situ pairs in `samples.csv`. The reservoirs span mesotrophic to hypertrophic states and include extreme bloom events (up to 332 µg/L).
+
+**Provenance note on time.** Each of the 94 pairs derives from its own Sentinel-2 product, but the per-record acquisition timestamps were not retained when the table was compiled, so records are identified by campaign rather than by date and the individual temporal offsets cannot be recovered from these files. What is documented is the characterisation reported with the original processing (Cuartero et al., 2023): all 94 images fall inside the ±48 h window and 26% were acquired on the same day as the in-situ sample. Users cannot filter these records by temporal offset; a study for which simultaneity is critical should treat the whole collection as subject to an offset of up to two days.
 
 ## File formats
 
@@ -31,7 +35,7 @@ In-situ Chl-a was measured by the Junta de Extremadura between 2017 and 2022. A 
 | Column | Description | Units |
 |---|---|---|
 | `Reservoir` | Reservoir name | — |
-| `Date` | Acquisition date (ISO 8601) | YYYY-MM-DD |
+| `Campaign` | Monitoring campaign the record belongs to | `Summer YYYY` / `Autumn YYYY` |
 | `In_situ` | In-situ measured chlorophyll-a | µg/L |
 | `C2RCC` | Chl-a from the C2RCC processor | µg/L |
 | `C2X` | Chl-a from the C2X processor | µg/L |
@@ -51,6 +55,8 @@ In-situ Chl-a was measured by the Junta de Extremadura between 2017 and 2022. A 
 | `Surface (km2)` | Surface area | km² |
 | `Volume (hm3)` | Storage capacity | hm³ |
 | `Elevation` | Elevation | m |
+| `Eq. width (pix)` | Equivalent width sqrt(A) in 10 m pixels | pixels |
+| `Window fraction (%)` | Share of the surface covered by one 7×7 window (4900 m² / A) | % |
 | `Max. Chl-a` / `Min. Chl-a` / `Ave. Chl-a` / `Std. Chl-a` | In-situ Chl-a statistics over all in-situ measurements | µg/L |
 | `Trophic state` | OECD class by mean in-situ Chl-a | — |
 
@@ -58,40 +64,55 @@ In-situ Chl-a was measured by the Junta de Extremadura between 2017 and 2022. A 
 
 ## Reservoir metadata
 
-| Location | Samples | Valid Dates | latitude | longitude | Basin | Construction year | Surface (km2) | Volume (hm3) | Elevation | Max. Chl-a | Min. Chl-a | Ave. Chl-a | Std. Chl-a | Trophic state |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Acebo | 4 | 2 | 40.240756 | -6.710411 | Tagus | 1997 | 0.1 | 1 | 563 | 11.50 | 2.50 | 6.12 | 3.6636 | Mesotrophic |
-| Aguijón | 5 | 3 | 38.475032 | -6.908223 | Guadiana | 1995 | 1.88 | 11 | 386 | 166.96 | 5.27 | 56.86 | 57.1688 | Hypertrophic |
-| Alcuéscar | 5 | 2 | 39.222270 | -6.229320 | Tagus | 1977 | 1 | 2 | 443 | 206.80 | 12.35 | 56.66 | 75.2283 | Hypertrophic |
-| Aldea del Cano | 5 | 4 | 39.265505 | -6.294546 | Tagus | 1988 | 0.84 | 3 | 388 | 131.60 | 46.81 | 83.06 | 28.6573 | Hypertrophic |
-| Aliseda | 3 | 2 | 39.412345 | -6.689628 | Tagus | 1978 | 0.06 | 0 | 349 | 14.32 | 8.64 | 11.87 | 2.3835 | Eutrophic |
-| Alpotrel | 3 | 3 | 39.367297 | -7.207824 | Tagus | 1991 | 0.49 | 2 | 500 | 25.00 | 10.40 | 17.84 | 5.9639 | Eutrophic |
-| Arrocerezal | 3 | 2 | 40.389367 | -6.263217 |  |  | 0.03 |  | 556 | 18.95 | 0.73 | 8.79 | 7.5851 | Eutrophic |
-| Brozas | 5 | 4 | 39.621919 | -6.767617 | Tagus | 1959 | 0.25 | 1 | 395 | 113.38 | 36.57 | 56.97 | 28.5719 | Hypertrophic |
-| Burguillos del Cerro | 5 | 4 | 38.404345 | -6.602901 | Guadiana | 1993 | 0.42 | 3 | 470 | 201.10 | 1.90 | 73.69 | 71.0265 | Hypertrophic |
-| Cantalgallo | 3 | 1 | 39.684074 | -5.783065 |  |  | 0.13 |  | 490 | 12.20 | 4.39 | 8.26 | 3.1887 | Eutrophic |
-| El Santo | 3 | 3 | 39.634345 | -7.478031 |  |  | 0.07 |  | 286 | 62.78 | 9.77 | 28.66 | 24.1727 | Hypertrophic |
-| Garciaz | 3 | 1 | 39.396485 | -5.604155 | Tagus | 1994 | 0.05 | 0 | 779 | 16.42 | 4.33 | 8.76 | 5.4385 | Eutrophic |
-| Garganta del Obispo | 3 | 1 | 40.097792 | -5.856256 | Tagus | 1995 | 0.01 | 0 | 983 | 85.33 | 0.97 | 29.40 | 39.5503 | Hypertrophic |
-| Hervás | 3 | 2 | 40.268834 | -5.823085 | Tagus | 1991 | 0.03 | 0 | 822 | 19.42 | 8.42 | 13.59 | 4.5149 | Eutrophic |
-| Jaime Ozores | 11 | 9 | 38.467359 | -6.560673 | Guadiana | 1962 | 0.21 | 2 | 438 | 211.82 | 7.28 | 77.99 | 79.1190 | Hypertrophic |
-| Las Majadillas | 3 | 3 | 40.082326 | -5.781343 |  |  | 0.17 |  | 605 | 25.99 | 2.78 | 11.31 | 10.4257 | Eutrophic |
-| Llerena | 4 | 4 | 38.304330 | -5.910595 | Guadiana | 1989 | 1.55 | 8 | 543 | 147.12 | 30.43 | 65.19 | 47.5758 | Hypertrophic |
-| Los Huertos | 4 | 2 | 39.726136 | -5.382478 |  |  | 0.1 |  | 525 | 70.55 | 26.69 | 48.30 | 18.9634 | Hypertrophic |
-| Madroñera | 5 | 2 | 39.454987 | -5.699192 | Tagus | 1973 | 0.13 | 0 | 705 | 38.93 | 3.57 | 16.41 | 12.5613 | Eutrophic |
-| Majarrobledo | 3 | 1 | 40.437671 | -6.337652 |  |  | 0.02 |  | 920 | 20.48 | 0.40 | 7.72 | 9.0573 | Mesotrophic |
-| Membrío | 3 | 1 | 39.520517 | -7.064116 | Tagus | 1978 | 0.28 | 1 | 327 | 60.76 | 19.53 | 41.57 | 16.9517 | Hypertrophic |
-| Navarredonda | 5 | 2 | 39.240847 | -6.017991 | Tagus | 1997 | 0.34 | 1 | 512 | 164.61 | 3.39 | 70.89 | 59.8990 | Hypertrophic |
-| Navas del Madroño | 5 | 3 | 39.638273 | -6.610187 | Tagus | 1938 | 0.17 | 1 | 416 | 33.63 | 10.48 | 27.04 | 8.3969 | Hypertrophic |
-| Nogales | 5 | 3 | 38.555789 | -6.730072 | Guadiana | 1991 | 1.53 | 18 | 369 | 96.46 | 26.83 | 60.08 | 29.3369 | Hypertrophic |
-| Palomero | 3 | 2 | 40.241523 | -6.341918 | Tagus | 1977 | 0.07 | 0 | 476 | 44.83 | 2.35 | 21.98 | 17.4918 | Eutrophic |
-| Pretura del Molino | 3 | 3 | 39.087035 | -4.911290 |  |  | 0.25 |  | 491 | 8.41 | 5.58 | 7.04 | 1.1574 | Mesotrophic |
-| Ribera del Castaño | 3 | 1 | 39.837104 | -6.266681 |  |  | 0.16 |  | 435 | 26.99 | 10.51 | 19.46 | 6.8031 | Eutrophic |
-| Rubiales | 4 | 3 | 38.402369 | -6.796037 |  |  | 0.06 |  | 502 | 204.58 | 47.49 | 99.42 | 61.6050 | Hypertrophic |
-| San Marcos | 5 | 5 | 40.122931 | -6.320906 | Tagus | 1997 | 0.33 | 3 | 401 | 35.68 | 6.30 | 23.21 | 9.9878 | Eutrophic |
-| Santa Lucía | 3 | 2 | 39.497937 | -5.465744 |  |  | 0.09 | 1 | 682 | 11.94 | 4.22 | 8.85 | 3.3345 | Eutrophic |
-| Talaván | 11 | 10 | 39.673738 | -6.306319 | Tagus | 1977 | 0.42 | 1 | 360 | 72.17 | 3.00 | 25.42 | 20.7355 | Hypertrophic |
-| Tres Torres | 5 | 4 | 38.093030 | -6.316272 | Tagus | 1973 | 0.3 | 1 | 435 | 331.88 | 49.46 | 169.55 | 113.6788 | Hypertrophic |
+| Location | Samples | Valid Dates | latitude | longitude | Basin | Construction year | Surface (km2) | Volume (hm3) | Elevation | Eq. width (pix) | Window fraction (%) | Max. Chl-a | Min. Chl-a | Ave. Chl-a | Std. Chl-a | Trophic state |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Acebo | 4 | 2 | 40.240756 | -6.710411 | Tagus | 1997 | 0.1 | 1 | 563 | 31.6 | 4.90 | 11.50 | 2.50 | 6.12 | 3.6636 | Mesotrophic |
+| Aguijón | 5 | 3 | 38.475032 | -6.908223 | Guadiana | 1995 | 1.88 | 11 | 386 | 137.1 | 0.26 | 166.96 | 5.27 | 56.86 | 57.1688 | Hypertrophic |
+| Alcuéscar | 5 | 2 | 39.222270 | -6.229320 | Tagus | 1977 | 1 | 2 | 443 | 100.0 | 0.49 | 206.80 | 12.35 | 56.66 | 75.2283 | Hypertrophic |
+| Aldea del Cano | 5 | 4 | 39.265505 | -6.294546 | Tagus | 1988 | 0.84 | 3 | 388 | 91.7 | 0.58 | 131.60 | 46.81 | 83.06 | 28.6573 | Hypertrophic |
+| Aliseda | 3 | 2 | 39.412345 | -6.689628 | Tagus | 1978 | 0.06 | 0 | 349 | 24.5 | 8.17 | 14.32 | 8.64 | 11.87 | 2.3835 | Eutrophic |
+| Alpotrel | 3 | 3 | 39.367297 | -7.207824 | Tagus | 1991 | 0.49 | 2 | 500 | 70.0 | 1.00 | 25.00 | 10.40 | 17.84 | 5.9639 | Eutrophic |
+| Arrocerezal | 3 | 2 | 40.389367 | -6.263217 |  |  | 0.03 |  | 556 | 17.3 | 16.33 | 18.95 | 0.73 | 8.79 | 7.5851 | Eutrophic |
+| Brozas | 5 | 4 | 39.621919 | -6.767617 | Tagus | 1959 | 0.25 | 1 | 395 | 50.0 | 1.96 | 113.38 | 36.57 | 56.97 | 28.5719 | Hypertrophic |
+| Burguillos del Cerro | 5 | 4 | 38.404345 | -6.602901 | Guadiana | 1993 | 0.42 | 3 | 470 | 64.8 | 1.17 | 201.10 | 1.90 | 73.69 | 71.0265 | Hypertrophic |
+| Cantalgallo | 3 | 1 | 39.684074 | -5.783065 |  |  | 0.13 |  | 490 | 36.1 | 3.77 | 12.20 | 4.39 | 8.26 | 3.1887 | Eutrophic |
+| El Santo | 3 | 3 | 39.634345 | -7.478031 |  |  | 0.07 |  | 286 | 26.5 | 7.00 | 62.78 | 9.77 | 28.66 | 24.1727 | Hypertrophic |
+| Garciaz | 3 | 1 | 39.396485 | -5.604155 | Tagus | 1994 | 0.05 | 0 | 779 | 22.4 | 9.80 | 16.42 | 4.33 | 8.76 | 5.4385 | Eutrophic |
+| Garganta del Obispo | 3 | 1 | 40.097792 | -5.856256 | Tagus | 1995 | 0.01 | 0 | 983 | 10.0 | 49.00 | 85.33 | 0.97 | 29.40 | 39.5503 | Hypertrophic |
+| Hervás | 3 | 2 | 40.268834 | -5.823085 | Tagus | 1991 | 0.03 | 0 | 822 | 17.3 | 16.33 | 19.42 | 8.42 | 13.59 | 4.5149 | Eutrophic |
+| Jaime Ozores | 11 | 9 | 38.467359 | -6.560673 | Guadiana | 1962 | 0.21 | 2 | 438 | 45.8 | 2.33 | 211.82 | 7.28 | 77.99 | 79.1190 | Hypertrophic |
+| Las Majadillas | 3 | 3 | 40.082326 | -5.781343 |  |  | 0.17 |  | 605 | 41.2 | 2.88 | 25.99 | 2.78 | 11.31 | 10.4257 | Eutrophic |
+| Llerena | 4 | 4 | 38.304330 | -5.910595 | Guadiana | 1989 | 1.55 | 8 | 543 | 124.5 | 0.32 | 147.12 | 30.43 | 65.19 | 47.5758 | Hypertrophic |
+| Los Huertos | 4 | 2 | 39.726136 | -5.382478 |  |  | 0.1 |  | 525 | 31.6 | 4.90 | 70.55 | 26.69 | 48.30 | 18.9634 | Hypertrophic |
+| Madroñera | 5 | 2 | 39.454987 | -5.699192 | Tagus | 1973 | 0.13 | 0 | 705 | 36.1 | 3.77 | 38.93 | 3.57 | 16.41 | 12.5613 | Eutrophic |
+| Majarrobledo | 3 | 1 | 40.437671 | -6.337652 |  |  | 0.02 |  | 920 | 14.1 | 24.50 | 20.48 | 0.40 | 7.72 | 9.0573 | Mesotrophic |
+| Membrío | 3 | 1 | 39.520517 | -7.064116 | Tagus | 1978 | 0.28 | 1 | 327 | 52.9 | 1.75 | 60.76 | 19.53 | 41.57 | 16.9517 | Hypertrophic |
+| Navarredonda | 5 | 2 | 39.240847 | -6.017991 | Tagus | 1997 | 0.34 | 1 | 512 | 58.3 | 1.44 | 164.61 | 3.39 | 70.89 | 59.8990 | Hypertrophic |
+| Navas del Madroño | 5 | 3 | 39.638273 | -6.610187 | Tagus | 1938 | 0.17 | 1 | 416 | 41.2 | 2.88 | 33.63 | 10.48 | 27.04 | 8.3969 | Hypertrophic |
+| Nogales | 5 | 3 | 38.555789 | -6.730072 | Guadiana | 1991 | 1.53 | 18 | 369 | 123.7 | 0.32 | 96.46 | 26.83 | 60.08 | 29.3369 | Hypertrophic |
+| Palomero | 3 | 2 | 40.241523 | -6.341918 | Tagus | 1977 | 0.07 | 0 | 476 | 26.5 | 7.00 | 44.83 | 2.35 | 21.98 | 17.4918 | Eutrophic |
+| Pretura del Molino | 3 | 3 | 39.087035 | -4.911290 |  |  | 0.25 |  | 491 | 50.0 | 1.96 | 8.41 | 5.58 | 7.04 | 1.1574 | Mesotrophic |
+| Ribera del Castaño | 3 | 1 | 39.837104 | -6.266681 |  |  | 0.16 |  | 435 | 40.0 | 3.06 | 26.99 | 10.51 | 19.46 | 6.8031 | Eutrophic |
+| Rubiales | 4 | 3 | 38.402369 | -6.796037 |  |  | 0.06 |  | 502 | 24.5 | 8.17 | 204.58 | 47.49 | 99.42 | 61.6050 | Hypertrophic |
+| San Marcos | 5 | 5 | 40.122931 | -6.320906 | Tagus | 1997 | 0.33 | 3 | 401 | 57.4 | 1.48 | 35.68 | 6.30 | 23.21 | 9.9878 | Eutrophic |
+| Santa Lucía | 3 | 2 | 39.497937 | -5.465744 |  |  | 0.09 | 1 | 682 | 30.0 | 5.44 | 11.94 | 4.22 | 8.85 | 3.3345 | Eutrophic |
+| Talaván | 11 | 10 | 39.673738 | -6.306319 | Tagus | 1977 | 0.42 | 1 | 360 | 64.8 | 1.17 | 72.17 | 3.00 | 25.42 | 20.7355 | Hypertrophic |
+| Tres Torres | 5 | 4 | 38.093030 | -6.316272 | Tagus | 1973 | 0.3 | 1 | 435 | 54.8 | 1.63 | 331.88 | 49.46 | 169.55 | 113.6788 | Hypertrophic |
+
+## Reference bias correction
+
+`baseline_correction.py` fits the log–log baseline `log10(Chl) = a·log10(P) + b` for each processor, plus a joint form using the three co-registered retrievals, and evaluates them under **leave-one-reservoir-out** cross-validation. Run it with `python baseline_correction.py samples.csv` (requires NumPy and pandas).
+
+| Column | MAPD raw | MAPD corrected | Median ratio raw | corrected |
+|---|---|---|---|---|
+| `C2RCC` | 32% | 33% | 1.15 | 1.06 |
+| `C2X` | 639% | 39% | 7.39 | 0.97 |
+| `C2XC` | 2181% | 43% | 22.81 | 1.07 |
+| three jointly | — | 18% | — | 1.03 |
+
+This is a starting point and a sanity check, not a recommended retrieval: it is fitted on 94 records from a single regional network and should be refitted before use elsewhere. The machine-learning post-correction of Torrecilla-Pinero et al. (2026) is the reference treatment.
+
+**Note on modelling with these data.** The 94 pairs are unevenly distributed: the two best-sampled reservoirs supply 20% of the records, six reservoirs supply a single record each, and the effective number of equally weighted reservoirs is 21.9 of 32 (Gini 0.32). Use the reservoir, not the record, as the unit of resampling.
 
 ## Related articles
 
